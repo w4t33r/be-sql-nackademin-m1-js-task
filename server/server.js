@@ -3,12 +3,12 @@ const db = require('./db/db')
 const app = express()
 const path = require("path");
 const authRouter = require("./routes/auth")
-const cookies = require('cookie-parser')
+const cookie = require('cookie-parser')
 require("dotenv").config({
     path: path.resolve(__dirname, './db/.env')
 });
 
-app.use(cookies())
+app.use(cookie())
 
 const bodyParser = require('body-parser');
 
