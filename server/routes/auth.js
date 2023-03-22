@@ -1,19 +1,18 @@
 const Router = require("express")
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const {check, validationResult} = require('express-validator')
-const User = require('../models/User')
+const db = require('../db/db')
+const path = require("path");
 const router = new Router()
-require('dotenv').config()
+require("dotenv").config({
+    path: path.resolve(__dirname, './db/.env')
+});
 
-const secretKey = process.env.secret_key
 
-const authMiddleware = require('../middleware/authMiddleware')
-
-router.post('/registration',
-    [
-        check('email', 'email is not correct')
-            .isEmail(),
+router.post('/registration', [
+        check('username', `username cant be empty`)
+            .notEmpty(),
         check('password', 'Password must be longer that 4')
             .isLength({min: 5, max: 36})
     ],
@@ -23,80 +22,90 @@ router.post('/registration',
             if (!errors.isEmpty()) {
                 return res.status(400).json({message: "Uncorrect request", errors})
             }
-            const {email, password} = req.body
-            const existUser = await User.findOne({email})
-            if (existUser) {
-                return res.status(400).json({message: `User with email ${email} already exist`})
-            }
-            const hashedPassword = await bcrypt.hash(password, 6)
-            const user = new User({email, password: hashedPassword})
+            const {username, password} = req.body
 
-            await user.save()
-            return res.json({message: "User was created."})
+            const existUser = 'SELECT * FROM users WHERE username = ?'
+            await db.execute(existUser, [username], async (err, result) => {
+                if (err) {
+                    console.log(err, null)
+                } else {
+                    if (result.length > 0) {
+                        return res.status(400).json({message: `User with email ${username} already exist`})
+                    } else {
+                        const hashedPassword = await bcrypt.hash(password, 6)
+                        const addedUserSql = "INSERT INTO users (username, password) VALUES(?,?)";
+                        await db.execute(addedUserSql, [username, hashedPassword], (err, result) => {
+                            if (err) {
+                                console.log(err, null)
+                            } else {
+                                console.log(result)
+                                return res.json({message: "User was created."})
+                            }
+                        })
+
+                    }
+
+                }
+            })
+
         } catch (err) {
             console.log(err)
             res.send({message: "Server error"})
         }
     })
-
 
 
 router.post('/login',
     [
-        check('email', 'its not a email')
-            .isEmail()
+        check('username', `username cant be empty`)
+            .notEmpty(),
+        check('password', 'Password must be longer that 4')
+            .isLength({min: 5, max: 36})
     ],
     async (req, res) => {
         try {
-           const {email, password} = req.body
-            const user = await User.findOne({email})
-            if (!user) {
-                return res.status(404).json({message:'User not found'})
-            }
-            const isValidPass = bcrypt.compareSync(password, user.password)
-            if (!isValidPass) {
-                return res.status(400).json({message:'Pass is not correct'})
-            }
-
-            const token = jwt.sign({id:user.id},secretKey, {expiresIn: "1h"})
-            return res.json({
-                token,
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    avatar: user.avatar
+            const {username, password} = req.body
+            const existUser = 'SELECT id, password FROM users WHERE username = ?'
+            await db.execute(existUser, [username], async (err, result) => {
+                if (err) {
+                    console.log(err, null)
                 }
+                if (!result.length) {
+                    return res.status(400).json({message: `User with username: ${username} not found`})
+                } else if (result.length > 0) {
+                    const userId = result[0].id
+                    const hashedPassword = result[0].password
+                    const secretKey = process.env.secret_key
+                    const isValidPass = bcrypt.compare(password, hashedPassword)
+                    if (!isValidPass) {
+                        return res.status(400).json({message: 'Pass is not correct'})
+                    } else {
+                        const token = jwt.sign({id: userId, username:username}, secretKey, {expiresIn: "1h"})
+                        return res.cookie("UserCookies", token, {
+                            maxAge: 1000 * 60 * 60,
+                            path: "/",
+                            httpOnly:true
+                        })
+                            .json({
+                            token,
+                            status: {
+                                status: "200",
+                                text:"You are logged in",
+                                id: userId,
+                                username: username
+                            }
+                        })
+
+                    }
+                }
+
+
             })
         } catch (err) {
             console.log(err)
-            res.send({message: "Server error"})
+            res.send({message: "Server Error"})
         }
     })
-
-
-
-router.get('/auth', authMiddleware,
-    [
-        check('email', 'its not a email')
-            .isEmail()
-    ],
-    async (req, res) => {
-        try {
-            const user = await User.findOne({_id: req.user.id})
-            const token = jwt.sign({id: user.id}, secretKey, {expiresIn: "1h"})
-            return res.json({
-                token,
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    avatar: user.avatar
-                }
-            })
-        } catch (err) {
-
-        }
-    })
-
 
 module.exports = router
 
