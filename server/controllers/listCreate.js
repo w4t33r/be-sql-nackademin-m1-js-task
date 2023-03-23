@@ -138,31 +138,6 @@ module.exports.deleteList = async (req, res) => {
             }
         })
 
-        /*
-        await db.execute(deleteList, [id], (err, result) => {
-           if(fk === userId) {
-                await db.execute(deleteList, [db_id], (err, result) => {
-                    if (err) {
-                        res.status(401).json({message: 'DB Error'})
-                        console.log(err, null)
-                    } else {
-                        console.log('fk',fk)
-                        console.log('db',db_id)
-                        console.log(userId, user)
-                        res.status(200).json({message: 'Deleted'})
-                    }
-                })
-            }
-
-             if (err) {
-                 res.status(401).json({message: 'DB Error'})
-                 console.log(err, null)
-             } else {
-                 res.status(200).json({message: 'Deleted'})
-             }
-         })
- */
-
     } catch (e) {
         res.status('Server Error')
     }

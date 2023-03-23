@@ -15,7 +15,7 @@ app.use(cookie())
 
 const bodyParser = require('body-parser');
 
-/*assuming an express app is declared here*/
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -29,10 +29,6 @@ app.use("/api/auth", todoRouter)
 
 app.use(express.json())
 
-app.get('/', async (req, res)=> {
-    const {username} = req.body
-    res.send(username)
-})
 
 
 const start = async () => {
