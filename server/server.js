@@ -3,6 +3,7 @@ const db = require('./db/db')
 const app = express()
 const path = require("path");
 const authRouter = require("./routes/auth")
+const todoRouter = require('./routes/listRoute')
 const cookie = require('cookie-parser')
 require("dotenv").config({
     path: path.resolve(__dirname, './db/.env')
@@ -21,6 +22,9 @@ const PORT = process.env.PORT
 
 
 app.use("/api/auth", authRouter)
+app.use("/api/list", todoRouter)
+
+
 app.use(express.json())
 
 app.get('/', async (req, res)=> {
