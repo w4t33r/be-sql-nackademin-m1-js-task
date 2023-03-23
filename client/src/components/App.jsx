@@ -7,7 +7,7 @@ import Registration from "./auth/Registration";
 import Login from "./auth/login";
 import {useDispatch, useSelector} from "react-redux";
 import {auth} from "../action/user";
-import Add from './Add'
+
 
 function App() {
     const isAuth = useSelector(state => state.user.isAuth)
@@ -25,15 +25,15 @@ function App() {
             <div className='App'>
                 <Navbar/>
                 <div className="wrap">
-                    <Routes>
-
+                    {!isAuth && <Routes>
                         <Route path="/registration" element={<Registration/>}/>
                         <Route path="/login" element={<Login/>}/>
-                            <Route path="/getList" exact element={<Main/>}/>
-                            <Route path="/save" exact element={<Add/>}/>
-                            <Route path="/delete" exact element={<Main/>}/>
-                        </Routes>
-
+                    </Routes>
+                    }
+                    {isAuth && <Routes>
+                        <Route path="/getList" element={<Main/>}/>
+                    </Routes>
+                    }
                 </div>
             </div>
         </BrowserRouter>

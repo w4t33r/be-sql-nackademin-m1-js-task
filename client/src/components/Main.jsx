@@ -25,41 +25,42 @@ const Main = () => {
     return (
         <div className="App">
 
-            <div className="container">
+             <div className="container">
 
                 <h1>ToDo App</h1>
 
-                < div className="top">
+                <div className="top">
                     <input
-                    type="text"
-                    placeholder="Add ToDos..."
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                        type="text"
+                        placeholder="Add ToDos..."
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
                     />
 
                     <div
-                    className="add"
-                    onClick={isUpdating ?
-                    () => updateToDo(toDoId, text, setToDo, setText, setIsUpdating)
-                    : () => addToDo(text, setText, setToDo)}>
-                {isUpdating ? "Update" : "Add"}
+                        className="add"
+                        onClick={isUpdating ?
+                            () => updateToDo(toDoId, text, setToDo, setText, setIsUpdating)
+                            : () => addToDo(text, setText, setToDo)}>
+                        {isUpdating ? "Update" : "Add"}
                     </div>
 
                 </div>
 
-                <div className="list">
-
-                    {toDo.map((item) => <ToDo
+                    <div className="list">
+                    {isAuth && toDo.map((item) =>
+                        <ToDo
                         key={item.id}
                         text={item.todo}
-                        updateMode = {() => updateMode(item.id, item.todo)}
-                        deleteToDo = {() => deleteToDo(item.id, setToDo)} />)}
+                        updateMode={() => updateMode(item.id, item.todo)}
+                        deleteToDo={() => deleteToDo(item.id, setToDo)}/>)}
 
                 </div>
 
             </div>
 
         </div>
+
     );
 };
 

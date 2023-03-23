@@ -1,12 +1,13 @@
 import React from 'react'
+import {useSelector} from "react-redux";
 
 
 
 const ToDo = ({text, updateMode, deleteToDo}) => {
-
     return (
-        <div className="todo">
-            <div className="text">{text}</div>
+
+            <div className="todo">
+                <div className="text">{text}</div>
             <div className="icons">
                 <button className='icon' onClick={updateMode}> UPDATE</button>
                 <button className='icon' onClick={deleteToDo}> DELETE</button>

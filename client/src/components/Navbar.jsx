@@ -13,6 +13,7 @@ const Navbar = () => {
                 <div className="navbar__header">Backend_1_todoapp</div>
                 {!isAuth && <div className="navbar__login"><NavLink to="/login"> login </NavLink></div>}
                 {!isAuth && <div className="navbar__reg"><NavLink to="/registration"> registration </NavLink></div>}
+                {isAuth && <div className="navbar__login"><NavLink to="/getList"> Show Todo list </NavLink></div>}
                 {isAuth && <div className="navbar__button" onClick={() => dispatch(logout())}> Exit </div>}
             </div>
         </div>

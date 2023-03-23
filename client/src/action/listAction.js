@@ -3,16 +3,17 @@ import axios from 'axios'
 //const url = "http://localhost:5000/api/list"
 
 const getAllToDo = async (setToDo) => {
-    await axios
+         axios
         .get("http://localhost:5000/api/auth/getList", {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then(({data}) => {
             if(!data.length) {
                 console.log(data)
+            } else {
+                console.log(data)
+                setToDo(data)
             }
-            console.log(data)
-            setToDo(data)
         })
 }
 //await axios.post(`http://localhost:5000/api/delete`, {_id}, {
