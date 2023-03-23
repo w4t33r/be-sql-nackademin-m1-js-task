@@ -80,7 +80,7 @@ router.post('/login',
                     } else {
                         const token = jwt.sign({id: userId, username: username}, secretKey, {expiresIn: "1h"})
                         return res.cookie("UserCookies", token, {
-                            maxAge: 1000 * 60 * 60, path: "/api/auth/login", httpOnly: true
+                            maxAge: 1000 * 60 * 60, path: "/api/auth", httpOnly: true
                         })
                             .status(200).json({
                                 token, status: {
@@ -97,17 +97,21 @@ router.post('/login',
         }
     })
 
-/*
+
+
+
 router.get('/auth', authMiddleware,
     async (req, res) => {
         try {
-            res.send('hello')
+            console.log(req.user.username)
+            const username = req.user.username
             const user = 'SELECT username FROM users WHERE id = ?'
-           db.execute(user, [req.username], (err, result) => {
+           db.execute(user, [username], (err, result) => {
                if(err){
                    throw err;
                } else {
-                   console.log(req.username)
+                   const secretKey = process.env.secret_key
+                   console.log('secret',secretKey)
                    const token = jwt.sign({username: username}, secretKey, {expiresIn: "1h"})
                    return res.json({
                        token,
@@ -118,12 +122,13 @@ router.get('/auth', authMiddleware,
                    })
                }
            })
-
-        } catch (err) {
-            res.send({message: "Server Error"})
+        } catch (e) {
+            res.send('Server Error')
         }
+
+
     })
-*/
+
 
 module.exports = router
 

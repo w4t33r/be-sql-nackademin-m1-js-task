@@ -5,10 +5,12 @@ const path = require("path");
 const authRouter = require("./routes/auth")
 const todoRouter = require('./routes/listRoute')
 const cookie = require('cookie-parser')
+const cors = require('./middleware/corsMiddleware')
 require("dotenv").config({
     path: path.resolve(__dirname, './db/.env')
 });
 
+app.use(cors)
 app.use(cookie())
 
 const bodyParser = require('body-parser');
@@ -22,7 +24,7 @@ const PORT = process.env.PORT
 
 
 app.use("/api/auth", authRouter)
-app.use("/api/list", todoRouter)
+app.use("/api/auth", todoRouter)
 
 
 app.use(express.json())

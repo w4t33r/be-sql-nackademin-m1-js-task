@@ -22,10 +22,10 @@ module.exports.getList = async (req, res) => {
         req.user = decodedJwt
         const id = decodedJwt.id
         console.log('ID', decodedJwt.id)
-        const sqlGet = "SELECT todo, fk_user from list, users where fk_user = users.id and users.id =?";
+        const getList = "SELECT list.id, todo from list, users where fk_user = users.id and users.id =?";
         console.log(id)
 
-        db.execute(sqlGet, [id], (error, result) => {
+        db.execute(getList, [id], (error, result) => {
             if(error) {
                 console.log(error)
             } else {
@@ -76,14 +76,14 @@ module.exports.updateList = async (req, res) => {
         req.user = decode
         // const decodeToken = jwt.decode(token, {complete:true})
         //console.log(decodeToken)
-        const id = decode.id;
-        const {todo} = req.body;
+        const {id, todo} = req.body;
         const updateList = "UPDATE list SET todo = ? WHERE id = ?";
-        db.execute(updateList, [id, todo], (err, result) => {
+        db.execute(updateList, [todo, id], (err, result) => {
             if (err) {
                 res.status(401).json({message: 'Auth Error'})
                 console.log(err, null)
             } else {
+                console.log(todo, id)
                 res.status(200).json({message: 'Created'})
             }
         })

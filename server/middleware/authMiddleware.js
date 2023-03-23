@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const path = require("path");
 require("dotenv").config({
-    path: path.resolve(__dirname, './db/.env')
+    path: path.resolve(__dirname, '../db/.env')
 });
 
 const secretKey = process.env.secret_key
@@ -13,13 +13,16 @@ module.exports = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1]
         if (!token) {
+            console.log(token)
             return res.status(401).json({message: 'Auth error'})
         }
+        console.log(secretKey)
         const decoded = jwt.verify(token, secretKey)
         req.user = decoded
+        console.log(req.user)
         next()
     } catch (e) {
-        return res.status(401).json({message: 'Auth error'})
+        return res.status(401).json({message: 'Auth  Error'})
     }
 
 }
