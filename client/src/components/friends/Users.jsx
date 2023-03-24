@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import User from "./User"
-import './main.css'
-import {getFriends, showUsers, showFriendsList} from "../../action/FriendAction";
+import './friends.css'
+import {getFriends, showUsers} from "../../action/FriendAction";
 import {useSelector} from "react-redux";
 
 

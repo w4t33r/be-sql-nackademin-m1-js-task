@@ -2,20 +2,45 @@ import axios from 'axios'
 
 //const url = "http://localhost:5000/api/list"
 
+
+
+
+
 const getAllToDo = async (setToDo) => {
-         axios
+        await axios
+            .get("http://localhost:5000/api/auth/getList", {
+                headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
+            })
+            .then(({data}) => {
+                console.log(data)
+                if(!data.length) {
+                    console.log(data)
+                } else {
+                    setToDo(data)
+                }
+            })
+
+
+}
+
+/*
+const getAllToDo = async (setToDo) => {
+        await axios
         .get("http://localhost:5000/api/auth/getList", {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then(({data}) => {
             if(!data.length) {
                 console.log(data)
+                console.log(localStorage.getItem('token'))
             } else {
                 console.log(data)
                 setToDo(data)
             }
         })
 }
+
+ */
 //await axios.post(`http://localhost:5000/api/delete`, {_id}, {
 //  headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
 
@@ -26,7 +51,6 @@ const addToDo = (todo, setText, setToDo) => {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then((data) => {
-
             setText("")
             getAllToDo(setToDo)
         })
@@ -41,7 +65,6 @@ const updateToDo = (id, todo, setToDo, setText, setIsUpdating) => {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then((data) => {
-            console.log(data)
             setText("")
             setIsUpdating(false)
             getAllToDo(setToDo)
@@ -58,7 +81,6 @@ const deleteToDo = (id, setToDo) => {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then((data) => {
-            console.log(data)
             getAllToDo(setToDo)
         })
         .catch((err) => alert(id))

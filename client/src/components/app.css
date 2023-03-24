@@ -3,10 +3,17 @@
     padding: 0;
     box-sizing: border-box;
     color: orangered;
+   text-decoration: none;
 }
 body {
-    background-color: orange;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: white;
 }
+
 #root {
     width: 100%;
 }
@@ -16,7 +23,8 @@ body {
     align-items: center;
 }
 .wrap {
-    width: 1140px;
+    align-items: center;
+    justify-content: center;
     display: flex;
     flex-direction: column;
 }

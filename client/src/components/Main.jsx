@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import ToDo from "./ToDo";
-import './main.css'
-import axios from "axios";
-import { addToDo, getAllToDo, updateToDo, deleteToDo } from "../action/listAction";
-import {useSelector} from "react-redux";
+import {addToDo, getAllToDo, updateToDo, deleteToDo } from "../action/listAction";
+import {useDispatch, useSelector} from "react-redux";
+import {auth} from "../action/user";
+
 
 
 const Main = () => {
+
     const isAuth = useSelector(state => state.user.isAuth)
     const [toDo, setToDo] = useState([])
     const [text, setText] = useState("")
     const [isUpdating, setIsUpdating] = useState(false)
     const [toDoId, setToDoId] = useState("")
+
 
     useEffect(() => {
         getAllToDo(setToDo)
@@ -26,9 +28,6 @@ const Main = () => {
         <div className="App">
 
              <div className="container">
-
-                <h1>ToDo App</h1>
-
                 <div className="top">
                     <input
                         type="text"

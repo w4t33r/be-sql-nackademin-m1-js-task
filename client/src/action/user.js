@@ -25,9 +25,9 @@ export const login =  (username, password) => {
                 username,
                 password
             })
+
             dispatch(setUser(response.data.user))
           localStorage.setItem('token', response.data.token)
-            console.log(response.data)
         } catch (e) {
             alert(e.response.data.message)
         }
@@ -42,8 +42,10 @@ export const auth =  () => {
             const response = await axios.get(`http://localhost:5000/api/auth/auth`,
                 {headers:{Authorization:`Bearer ${localStorage.getItem('token')}`}}
             )
+
             dispatch(setUser(response.data.user))
             localStorage.setItem('token', response.data.token)
+            dispatch(setUser(response.data))
         } catch (e) {
             localStorage.removeItem('token')
         }

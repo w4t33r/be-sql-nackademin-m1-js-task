@@ -9,19 +9,11 @@ const showFriends = async (setToDo) => {
         })
         .then(({data}) => {
             if(!data.length) {
-                console.log(data)
             } else {
-                console.log(data)
                 setToDo(data)
             }
         })
 }
-
-
-
-
-
-
 
 
 const showUsers = async (setToDo) => {
@@ -35,7 +27,7 @@ const showUsers = async (setToDo) => {
                 if(!data.length) {
                     console.log(data)
                 } else {
-                    console.log(data)
+
                     setToDo(data)
                 }
             })
@@ -53,7 +45,7 @@ const getFriends = (id , setToDo) => {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then((data) => {
-            console.log(data)
+
             showFriends(setToDo)
             alert('Friend Added')
 
@@ -68,7 +60,7 @@ const deleteFriends = (id, setToDo) => {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then((data) => {
-            console.log(data)
+
             showFriends(setToDo)
 
         })
@@ -86,7 +78,6 @@ const showFriendsList = async (username, setToDo) => {
             if(!data.length) {
                 console.log(data)
             } else {
-                console.log(data)
                 setToDo(data)
             }
         })

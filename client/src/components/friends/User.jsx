@@ -1,6 +1,7 @@
 import React from 'react'
 
 
+
 const User = ({text, addFriends}) => {
     return (
 

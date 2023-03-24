@@ -10,7 +10,7 @@ const Navbar = () => {
     return (
         <div className="navbar">
             <div className="container">
-                <div className="navbar__header">Backend_1_todoapp</div>
+                <div className="navbar__header">listCreator</div>
                 {!isAuth && <div className="navbar__login"><NavLink to="/login"> login </NavLink></div>}
                 {!isAuth && <div className="navbar__reg"><NavLink to="/registration"> registration </NavLink></div>}
                 {isAuth && <div className="navbar__login"><NavLink to="/getList"> Show Todo list </NavLink></div>}
