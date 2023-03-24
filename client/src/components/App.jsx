@@ -7,6 +7,8 @@ import Registration from "./auth/Registration";
 import Login from "./auth/login";
 import {useDispatch, useSelector} from "react-redux";
 import {auth} from "../action/user";
+import Users from "./friends/Users";
+import Friends from "./friends/Friends";
 
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
                     }
                     {isAuth && <Routes>
                         <Route path="/getList" element={<Main/>}/>
+                        <Route path="/friend/id" element={<Friends/>}/>
+                        <Route path="/friend/users" element={<Users/>}/>
                     </Routes>
                     }
                 </div>
