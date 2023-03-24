@@ -19,23 +19,23 @@ router.post('/registration',
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).json({message: "Uncorrect request", errors})
+            return res.status(400).json({message: "Bad request", errors})
         }
         const {username, password} = req.body
 
         const existUser = 'SELECT * FROM users WHERE username = ?'
         await db.execute(existUser, [username], async (err, result) => {
             if (err) {
-                console.log(err, null)
+                res.status(500).json({message: 'Internal server error'})
             } else {
                 if (result.length > 0) {
-                    return res.status(400).json({message: `User with email ${username} already exist`})
+                    return res.status(400).json({message: `User with username ${username} already exist`})
                 } else {
                     const hashedPassword = await bcrypt.hash(password, 6)
                     const addedUserSql = "INSERT INTO users (username, password) VALUES(?,?)";
                     await db.execute(addedUserSql, [username, hashedPassword], (err, result) => {
                         if (err) {
-                            console.log(err, null)
+                            res.status(500).json({message: 'Internal server error'})
                         } else {
 
                             return res.json({message: "User was created."})
@@ -48,8 +48,7 @@ router.post('/registration',
         })
 
     } catch (err) {
-        console.log(err)
-        res.send({message: "Server error"})
+        res.status(500).json({message: 'Internal server error'})
     }
 })
 
@@ -66,7 +65,7 @@ router.post('/login',
             const existUser = 'SELECT id, password FROM users WHERE username = ?'
             await db.execute(existUser, [username], async (err, result) => {
                 if (err) {
-                    console.log(err, null)
+                    res.status(500).json({message: 'Internal server error'})
                 }
                 if (!result.length) {
                     return res.status(400).json({message: `User with username: ${username} not found`})
@@ -93,7 +92,7 @@ router.post('/login',
             })
 
         } catch (err) {
-            res.send({message: "Server Error"})
+            res.status(500).json({message: 'Internal server error'})
         }
     })
 
@@ -104,25 +103,28 @@ router.get('/auth', authMiddleware,
     async (req, res) => {
         try {
             const username = req.user.username
+            const userId = req.user.id
             const user = 'SELECT username FROM users WHERE id = ?'
            db.execute(user, [username], (err, result) => {
                if(err){
-                   throw err;
+                   res.status(500).json({message: 'Internal server error'})
                } else {
                    const secretKey = process.env.secret_key
 
-                   const token = jwt.sign({username: username}, secretKey, {expiresIn: "1h"})
-                   return res.json({
-                       token,
-                       user: {
-                           username:username,
-                           valid:true
-                       }
+                   const token = jwt.sign({id: userId, username: username}, secretKey, {expiresIn: "1h"})
+                   return res.cookie("UserCookies", token, {
+                       maxAge: 1000 * 60 * 60, path: "api/auth", httpOnly: true
                    })
+                       .status(200).json({
+                           token, user: {
+                               status: "200", text: "You are logged in", id: userId, username: username
+                           }
+                       })
+
                }
            })
         } catch (e) {
-            res.send('Server Error')
+            res.status(500).json({message: 'Internal server error'})
         }
 
 
