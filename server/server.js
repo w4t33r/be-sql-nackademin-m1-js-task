@@ -19,7 +19,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-const PORT = process.env.PORT
+const PORT = process.env.DB_PORT
 
 
 
