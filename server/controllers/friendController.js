@@ -14,7 +14,11 @@ module.exports.getFriend = async (req, res) => {
         const decode = jwt.verify(token, secretKey)
         req.user = decode
         const id = decode.id;
+        //On postman write "friendId:id"
         const {friendId} = req.body;
+        if(friendId === undefined) {
+            res.status(400).json({message: 'Bad request'})
+        }
         const createList = "INSERT INTO friend (fk_users, fk_friend) VALUES (? , ?)";
         db.execute(createList, [id, friendId], (err, result) => {
             if (err) {
