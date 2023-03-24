@@ -37,7 +37,7 @@ router.post('/registration',
                         if (err) {
                             console.log(err, null)
                         } else {
-                            console.log(result)
+
                             return res.json({message: "User was created."})
                         }
                     })
@@ -80,10 +80,10 @@ router.post('/login',
                     } else {
                         const token = jwt.sign({id: userId, username: username}, secretKey, {expiresIn: "1h"})
                         return res.cookie("UserCookies", token, {
-                            maxAge: 1000 * 60 * 60, path: "/api/auth", httpOnly: true
+                            maxAge: 1000 * 60 * 60, path: "api/auth", httpOnly: true
                         })
                             .status(200).json({
-                                token, status: {
+                                token, user: {
                                     status: "200", text: "You are logged in", id: userId, username: username
                                 }
                             })
@@ -103,7 +103,6 @@ router.post('/login',
 router.get('/auth', authMiddleware,
     async (req, res) => {
         try {
-            console.log(req.user.username)
             const username = req.user.username
             const user = 'SELECT username FROM users WHERE id = ?'
            db.execute(user, [username], (err, result) => {
@@ -111,7 +110,7 @@ router.get('/auth', authMiddleware,
                    throw err;
                } else {
                    const secretKey = process.env.secret_key
-                   console.log('secret',secretKey)
+
                    const token = jwt.sign({username: username}, secretKey, {expiresIn: "1h"})
                    return res.json({
                        token,

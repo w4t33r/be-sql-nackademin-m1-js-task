@@ -55,7 +55,7 @@ module.exports.showFriend = async (req, res) => {
         const decodedJwt = jwt.decode(token, {completed:true})
         req.user = decodedJwt
         const id = decodedJwt.id
-        console.log('GETFRIENDSBYID:', id)
+
         const getList = "SELECT  friend.id, u.username from friend\n" +
             "INNER JOIN users\n" +
             "ON friend.fk_users = users.id\n" +
@@ -65,7 +65,7 @@ module.exports.showFriend = async (req, res) => {
 
         db.execute(getList, [id], (error, result) => {
             if(error) {
-                console.log(error)
+                console.log(error,null)
             } else {
                 res.send(result)
             }
@@ -85,12 +85,12 @@ module.exports.showFriendList = async (req, res) => {
             return res.status(401).json({message: 'Bad token'})
         }
         const {username} = req.body
-        console.log(username)
+
         const getList = "SELECT todo, users.id from users, list where fk_user = users.id and users.username = ?"
 
         db.execute(getList, [username], (error, result) => {
             if(error) {
-                console.log(error)
+                console.log(error, null)
             } else {
                 res.send(result)
             }
@@ -121,17 +121,14 @@ module.exports.deleteFriend = async (req, res) => {
             if(!result.length) {
                 res.send('Field cant be empty')
             }
-            console.log('res.lenght',result.length)
+
             const deleteId = id
-            console.log('DeletedID',deleteId)
+
             if(result.length > 0) {
                 const fk = result.map((async data => {
                     const usersRef = data.fk_users
                     const sKey = data.fk_friend
 
-                    console.log('users_F', usersRef)
-                    console.log('usersID',userId)
-                    console.log('friend_F', sKey)
                     if(usersRef === userId) {
                         await db.execute(deleteList, [deleteId], (err, result) => {
                             if (err) {

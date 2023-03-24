@@ -6,28 +6,24 @@ require("dotenv").config({
 });
 
 
-
-
 module.exports.getList = async (req, res) => {
     try {
-        console.log(req.headers)
-        console.log(req.headers.authorization)
         const token = req.headers.authorization.split(' ')[1]
         if (!token) {
             return res.status(401).json({message: 'Bad token'})
         }
-        console.log(token)
-        const decodedJwt = jwt.decode(token, {completed:true})
-        console.log('decoded',decodedJwt, {completed:true})
+
+        const decodedJwt = jwt.decode(token, {completed: true})
+
         req.user = decodedJwt
         const id = decodedJwt.id
-        console.log('ID', decodedJwt.id)
+
         const getList = "SELECT list.id, todo from list, users where fk_user = users.id and users.id =?";
-        console.log(id)
+
 
         db.execute(getList, [id], (error, result) => {
-            if(error) {
-                console.log(error)
+            if (error) {
+                console.log(error, null)
             } else {
                 res.send(result)
             }
@@ -37,9 +33,6 @@ module.exports.getList = async (req, res) => {
     }
 
 }
-
-
-
 
 
 module.exports.createList = (req, res) => {
@@ -83,7 +76,6 @@ module.exports.updateList = async (req, res) => {
                 res.status(401).json({message: 'Auth Error'})
                 console.log(err, null)
             } else {
-                console.log(todo, id)
                 res.status(200).json({message: 'Created'})
             }
         })
@@ -112,16 +104,14 @@ module.exports.deleteList = async (req, res) => {
             if (err) {
                 console.log(err, null)
             }
-            if(!result.length) {
+            if (!result.length) {
                 res.send('empty object')
             }
-            console.log(result.length)
             const deleteId = id
-            if(result.length > 0) {
+            if (result.length > 0) {
                 const fk = result.map((async data => {
-                    console.log('fk_data',data.fk_user)
                     const fKey = data.fk_user
-                    if(fKey === userId) {
+                    if (fKey === userId) {
                         await db.execute(deleteList, [deleteId], (err, result) => {
                             if (err) {
                                 res.status(401).json({message: 'DB Error'})
@@ -139,7 +129,7 @@ module.exports.deleteList = async (req, res) => {
         })
 
     } catch (e) {
-        res.status('Server Error')
+        res.status(500).json({message: 'Server Error'})
     }
 
 }
