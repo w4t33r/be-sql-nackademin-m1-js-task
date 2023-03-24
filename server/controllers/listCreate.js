@@ -23,7 +23,7 @@ module.exports.getList = async (req, res) => {
 
         db.execute(getList, [id], (error, result) => {
             if (error) {
-                console.log(error, null)
+                res.status(500).json({message: 'Internal server error'})
             } else {
                 res.send(result)
             }
@@ -48,10 +48,9 @@ module.exports.createList = (req, res) => {
         const createList = "INSERT INTO list (fk_user, todo) VALUES (? , ?)";
         db.execute(createList, [id, todo], (err, result) => {
             if (err) {
-                res.status(401).json({message: 'Auth Error'})
-                console.log(err, null)
+                res.status(500).json({message: 'Internal server error'})
             } else {
-                res.status(200).json({message: 'Created'})
+                res.status(201).json({message: 'Created'})
             }
         })
     } catch (e) {
@@ -73,10 +72,9 @@ module.exports.updateList = async (req, res) => {
         const updateList = "UPDATE list SET todo = ? WHERE id = ?";
         db.execute(updateList, [todo, id], (err, result) => {
             if (err) {
-                res.status(401).json({message: 'Auth Error'})
-                console.log(err, null)
+                res.status(500).json({message: 'Internal server error'})
             } else {
-                res.status(200).json({message: 'Created'})
+                res.status(201).json({message: 'Created'})
             }
         })
 
@@ -102,10 +100,10 @@ module.exports.deleteList = async (req, res) => {
 
         await db.execute(checkSql, [id], async (err, result) => {
             if (err) {
-                console.log(err, null)
+                res.status(500).json({message: 'Internal server error'})
             }
             if (!result.length) {
-                res.send('empty object')
+                res.status(204).json({message: 'Field cant be empty'})
             }
             const deleteId = id
             if (result.length > 0) {
@@ -114,8 +112,7 @@ module.exports.deleteList = async (req, res) => {
                     if (fKey === userId) {
                         await db.execute(deleteList, [deleteId], (err, result) => {
                             if (err) {
-                                res.status(401).json({message: 'DB Error'})
-                                console.log(err, null)
+                                res.status(500).json({message: 'Internal server error'})
                             } else {
                                 res.status(200).json({message: 'Deleted'})
                             }
@@ -129,7 +126,7 @@ module.exports.deleteList = async (req, res) => {
         })
 
     } catch (e) {
-        res.status(500).json({message: 'Server Error'})
+        res.status(500).json({message: 'Internal server error'})
     }
 
 }

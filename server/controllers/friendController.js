@@ -20,11 +20,11 @@ module.exports.getFriend = async (req, res) => {
             if (err) {
                 res.status(401).json({message: 'User not found, or already your friend'})
             } else {
-                res.status(200).json({message: 'Friend added'})
+                res.status(201).json({message: 'Friend added'})
             }
         })
     } catch (e) {
-        res.status('Server Error')
+        res.status(500).json({message: 'Internal server error'})
     }
 }
 
@@ -35,13 +35,13 @@ module.exports.showUsers = async (req, res) => {
         const showUsers = "SELECT id, username FROM users";
         db.execute(showUsers, (err, result) => {
             if (err) {
-                res.status(500).json({message: 'Server Error'})
+                res.status(500).json({message: 'Internal server error'})
             } else {
                res.send(result)
             }
         })
     } catch (e) {
-        res.status('Server Error')
+        res.status(500).json({message: 'Internal server error'})
     }
 }
 
@@ -65,13 +65,13 @@ module.exports.showFriend = async (req, res) => {
 
         db.execute(getList, [id], (error, result) => {
             if(error) {
-                console.log(error,null)
+                res.status(500).json({message: 'Internal server error'})
             } else {
                 res.send(result)
             }
         });
     } catch (e) {
-        res.send(e)
+        res.status(500).json({message: 'Internal server error'})
     }
 
 }
@@ -90,13 +90,13 @@ module.exports.showFriendList = async (req, res) => {
 
         db.execute(getList, [username], (error, result) => {
             if(error) {
-                console.log(error, null)
+                res.status(500).json({message: 'Internal server error'})
             } else {
                 res.send(result)
             }
         });
     } catch (e) {
-        res.send(e)
+        res.status(500).json({message: 'Internal server error'})
     }
 
 }
@@ -116,10 +116,10 @@ module.exports.deleteFriend = async (req, res) => {
         const deleteList = "DELETE FROM friend WHERE id = ?";
         await db.execute(checkSql, [id], async (err, result) => {
             if (err) {
-                console.log(err, null)
+                res.status(500).json({message: 'Internal server error'})
             }
             if(!result.length) {
-                res.send('Field cant be empty')
+                res.status(204).json({message: 'Field cant be empty'})
             }
 
             const deleteId = id
@@ -127,13 +127,10 @@ module.exports.deleteFriend = async (req, res) => {
             if(result.length > 0) {
                 const fk = result.map((async data => {
                     const usersRef = data.fk_users
-                    const sKey = data.fk_friend
-
                     if(usersRef === userId) {
                         await db.execute(deleteList, [deleteId], (err, result) => {
                             if (err) {
-                                res.status(401).json({message: 'DB Error'})
-                                console.log(err, null)
+                                res.status(500).json({message: 'Internal server error'})
                             } else {
                                 res.status(200).json({message: 'Deleted'})
                             }
@@ -147,7 +144,7 @@ module.exports.deleteFriend = async (req, res) => {
         })
 
     } catch (e) {
-        res.status('Server Error')
+        res.status(500).json({message: 'Internal server error'})
     }
 
 }
