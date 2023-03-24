@@ -6,6 +6,7 @@ require("dotenv").config({
     path: path.resolve(__dirname, '../db/.env')
 });
 
+
 module.exports.getFriend = async (req, res) => {
     try {
         const secretKey = process.env.secret_key
@@ -28,6 +29,23 @@ module.exports.getFriend = async (req, res) => {
 }
 
 
+
+module.exports.showUsers = async (req, res) => {
+    try {
+        const showUsers = "SELECT id, username FROM users";
+        db.execute(showUsers, (err, result) => {
+            if (err) {
+                res.status(500).json({message: 'Server Error'})
+            } else {
+               res.send(result)
+            }
+        })
+    } catch (e) {
+        res.status('Server Error')
+    }
+}
+
+
 module.exports.showFriend = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]
@@ -36,8 +54,9 @@ module.exports.showFriend = async (req, res) => {
         }
         const decodedJwt = jwt.decode(token, {completed:true})
         req.user = decodedJwt
-        const {id} = req.body
-        const getList = "SELECT u.username from friend\n" +
+        const id = decodedJwt.id
+        console.log('GETFRIENDSBYID:', id)
+        const getList = "SELECT  friend.id, u.username from friend\n" +
             "INNER JOIN users\n" +
             "ON friend.fk_users = users.id\n" +
             "JOIN users u on u.id = friend.fk_friend\n" +
@@ -45,6 +64,31 @@ module.exports.showFriend = async (req, res) => {
             "WHERE users.id = ?";
 
         db.execute(getList, [id], (error, result) => {
+            if(error) {
+                console.log(error)
+            } else {
+                res.send(result)
+            }
+        });
+    } catch (e) {
+        res.send(e)
+    }
+
+}
+
+
+
+module.exports.showFriendList = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1]
+        if (!token) {
+            return res.status(401).json({message: 'Bad token'})
+        }
+        const {username} = req.body
+        console.log(username)
+        const getList = "SELECT todo, users.id from users, list where fk_user = users.id and users.username = ?"
+
+        db.execute(getList, [username], (error, result) => {
             if(error) {
                 console.log(error)
             } else {
@@ -70,9 +114,6 @@ module.exports.deleteFriend = async (req, res) => {
         const {id} = req.body
         const checkSql = 'SELECT fk_users, fk_friend, users.id, users.username FROM friend, users WHERE friend.fk_users = users.id AND friend.id =?';
         const deleteList = "DELETE FROM friend WHERE id = ?";
-
-        console.log('reqbody',id)
-
         await db.execute(checkSql, [id], async (err, result) => {
             if (err) {
                 console.log(err, null)
