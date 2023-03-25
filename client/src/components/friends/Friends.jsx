@@ -3,7 +3,6 @@ import FriendDelete from "./FriendDelete";
 import "./friendsStyles.css"
 import {showFriends, deleteFriends, showFriendsList} from "../../action/FriendAction";
 import {useSelector} from "react-redux";
-import getFiendList from "./getFriendList";
 
 
 

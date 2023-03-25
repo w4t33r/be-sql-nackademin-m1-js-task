@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import "./getFriendList"
-import {showFriendsList} from "../../action/FriendAction";
-import {useSelector} from "react-redux";
+import React from 'react'
+
 const FriendDelete = ({text, showList, todo, deleteToDo}) => {
     const [isShow, setShow] = React.useState(true);
     const handleToggle = () => {
@@ -37,7 +35,7 @@ const FriendDelete = ({text, showList, todo, deleteToDo}) => {
 const Welcome = ({todo, text }) => {
     return (
         <div>{text}
-            <div>{todo}</div>
+            <div className="text">{todo}</div>
         </div>
     )
 }

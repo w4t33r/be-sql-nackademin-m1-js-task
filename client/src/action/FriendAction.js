@@ -62,9 +62,10 @@ const deleteFriends = (id, setToDo) => {
         .then((data) => {
 
             showFriends(setToDo)
+            alert("Deleted")
 
         })
-        .catch((err) => alert(id))
+        .catch((err) => alert(`You cant delete any todos if its not yours`))
 
 }
 
@@ -76,11 +77,12 @@ const showFriendsList = async (username, setToDo) => {
         })
         .then(({data}) => {
             if(!data.length) {
-                console.log(data)
+                alert('Your friend dont have any todo list')
             } else {
                 setToDo(data)
             }
         })
+        .catch((err)=> alert("You already looking at your friend todo list"))
 }
 
 
