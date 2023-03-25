@@ -60,13 +60,12 @@ module.exports.showFriend = async (req, res) => {
         req.user = decodedJwt
         const id = decodedJwt.id
 
-        const getList = "SELECT  friend.id, u.username from friend\n" +
-            "INNER JOIN users\n" +
-            "ON friend.fk_users = users.id\n" +
-            "JOIN users u on u.id = friend.fk_friend\n" +
-            "\n" +
+        const getList = "SELECT friend.id, u.username\n" +
+            "from friend\n" +
+            "         INNER JOIN users\n" +
+            "                    ON friend.fk_users = users.id\n" +
+            "         JOIN users u on u.id = friend.fk_friend\n" +
             "WHERE users.id = ?";
-
         db.execute(getList, [id], (error, result) => {
             if(error) {
                 res.status(500).json({message: 'Internal server error'})
@@ -94,12 +93,14 @@ module.exports.showFriendList = async (req, res) => {
 
         db.execute(getList, [username], (error, result) => {
             if(error) {
+                console.log(error)
                 res.status(500).json({message: 'Internal server error'})
             } else {
                 res.send(result)
             }
         });
     } catch (e) {
+        console.log(e)
         res.status(500).json({message: 'Internal server error'})
     }
 
