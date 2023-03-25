@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import ToDo from "./ToDo";
-import './friends.css'
-import {showFriends, deleteFriends, getFriends} from "../../action/FriendAction";
+import FriendDelete from "./FriendDelete";
+import "./friendsStyles.css"
+import {showFriends, deleteFriends} from "../../action/FriendAction";
 import {useSelector} from "react-redux";
 
 
@@ -9,7 +9,6 @@ import {useSelector} from "react-redux";
 const Friends = () => {
     const isAuth = useSelector(state => state.user.isAuth)
     const [toDo, setToDo] = useState([])
-    const [text, setText] = useState("")
 
 
     useEffect(() => {
@@ -19,20 +18,12 @@ const Friends = () => {
 
     return (
         <div className="App">
+            <div className="wrapper">
+                <div className="friend__list">
+                    <h1>Your Friends!</h1>
 
-            <div className="container">
-
-                <div className="top">
-                    <div
-                        className="add"
-                        onClick={() => getFriends(text, setText, setToDo)}>
-                    </div>
-
-                </div>
-
-                <div className="list">
                     {isAuth && toDo.map((item) =>
-                        <ToDo
+                        <FriendDelete
                             key={item.id}
                             text={item.username}
                             todo={item.todo}

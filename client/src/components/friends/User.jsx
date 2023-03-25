@@ -5,10 +5,10 @@ import React from 'react'
 const User = ({text, addFriends}) => {
     return (
 
-        <div className="todo">
+        <div className="user__container">
             <div className="text">{text}</div>
-            <div className="icons">
-                <button className='icon' onClick={addFriends
+            <div className="user__btn_container">
+                <button className='user__btn' onClick={addFriends
                 }>Add to friend
                 </button>
             </div>

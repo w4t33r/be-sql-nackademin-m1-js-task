@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import User from "./User"
-import './friends.css'
 import {getFriends, showUsers} from "../../action/FriendAction";
 import {useSelector} from "react-redux";
+import "./usersStyles.css"
 
 
 
@@ -17,9 +17,10 @@ const Users = () => {
     }, [])
 
     return (
-        <div className="App">
-            <div className="container">
-                <div className="list">
+        <div className="Users">
+            <div className="user__wrapper">
+                <div className="user__list">
+                    <h1>Users List</h1>
                     {isAuth && user.map((item) =>
                         <User
                             key={item.id}

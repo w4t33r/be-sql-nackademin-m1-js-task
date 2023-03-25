@@ -1,7 +1,6 @@
 import Navbar from "./Navbar";
 import Main from "./Main"
-import './app.css'
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import React, {useEffect} from "react";
 import Registration from "./auth/Registration";
 import Login from "./auth/login";

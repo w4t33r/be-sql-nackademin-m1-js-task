@@ -1,17 +1,17 @@
 import React from 'react'
 
 
-const ToDo = ({text, deleteToDo}) => {
+const FriendDelete = ({text, deleteToDo}) => {
 
     return (
         <div className="Todo">
-            <div className="text">{text}
+            <div className="text">Friend username: {text}
             </div>
-            <div className="icons">
+            <div className="friends__icons">
                 <button className='friend-btn' onClick={deleteToDo}> DELETE</button>
             </div>
         </div>
     )
 }
 
-export default ToDo
+export default FriendDelete

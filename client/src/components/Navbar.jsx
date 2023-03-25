@@ -16,7 +16,7 @@ const Navbar = () => {
                 {isAuth && <div className="navbar__login"><NavLink to="/getList"> Show Todo list </NavLink></div>}
                 {isAuth && <div className="navbar__login"><NavLink to="/friend/id"> Show Friends </NavLink></div>}
                 {isAuth && <div className="navbar__login"><NavLink to="/friend/users/"> users </NavLink></div>}
-                {isAuth && <div className="navbar__button" onClick={() => dispatch(logout())}> Exit </div>}
+                {isAuth && <div className="navbar__login" onClick={() => dispatch(logout())}> Exit </div>}
             </div>
         </div>
 
