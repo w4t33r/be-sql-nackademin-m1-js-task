@@ -90,6 +90,9 @@ module.exports.showFriendList = async (req, res) => {
         const {username} = req.body
 
         const getList = "SELECT todo, users.id from users, list where fk_user = users.id and users.username = ?"
+        if(username === undefined) {
+            res.status(400).json({message: 'Bad Request'})
+        }
 
         db.execute(getList, [username], (error, result) => {
             if(error) {
