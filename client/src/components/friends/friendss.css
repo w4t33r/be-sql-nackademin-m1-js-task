@@ -1,0 +1,70 @@
+.text {
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+}
+h1 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-size: 1.75rem;
+}
+
+.wrapper {
+    flex: 3;
+    display: flex;
+    margin-top: 5rem;
+    padding: 2rem;
+    border-radius: 5px;
+}
+
+.wrapper_container {
+    margin: 2rem 0 0 auto;
+    flex: 1;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.friend-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: black;
+    color: #fff;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    justify-items: center;
+}
+
+.Todo {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    flex-direction: column;
+    background-color: #8758ff;
+    color: #fff;
+    padding: 1.5rem 3rem;
+    border-radius: 5px;;
+
+}
+
+
+.friends__icons{
+   margin: auto;
+    padding-top: 15px;
+}
+.Wrapper {
+    margin: auto;
+    width: 40%;
+    display: flex;
+    background: #1A1A40;;
+}
+.friend__list {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    padding-bottom: 40px;
+
+}

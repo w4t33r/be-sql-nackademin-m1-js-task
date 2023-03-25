@@ -4,11 +4,11 @@ import React from 'react'
 const ToDo = ({text, deleteToDo}) => {
 
     return (
-        <div className="todo">
+        <div className="Todo">
             <div className="text">{text}
             </div>
             <div className="icons">
-                <button className='icon' onClick={deleteToDo}> DELETE</button>
+                <button className='friend-btn' onClick={deleteToDo}> DELETE</button>
             </div>
         </div>
     )
