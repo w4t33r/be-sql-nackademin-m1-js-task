@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const db = require("../db/db");
-
+const {check, validationResult} = require('express-validator')
 const path = require("path");
 require("dotenv").config({
     path: path.resolve(__dirname, '../db/.env')
@@ -15,9 +15,11 @@ module.exports.getFriend = async (req, res) => {
         req.user = decode
         const id = decode.id;
         //On postman write "friendId:id"
+
         const {friendId} = req.body;
         if(friendId === undefined) {
-            res.status(400).json({message: 'Bad request'})
+            res.status(400).json({message: 'Please check if you entered the correct friendId  '+
+                    'it must be in the following format - friendId:id where id is user_id'})
         }
         const createList = "INSERT INTO friend (fk_users, fk_friend) VALUES (? , ?)";
         db.execute(createList, [id, friendId], (err, result) => {
