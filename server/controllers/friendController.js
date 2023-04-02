@@ -11,10 +11,12 @@ module.exports.getFriend = async (req, res) => {
     try {
         const validation = friendListSchema.validate(req.body);
         if (validation.error) {
+            console.log(validation.error)
             return res.status(400).json(validation.error.details[0].message);
         }
         const {friendId} = validation.value
 
+        console.log(friendId)
         if (friendId === undefined) {
             res.status(400).json({
                 message: 'Bad Request:' +
@@ -104,14 +106,14 @@ module.exports.showFriendList = async (req, res) => {
         }
 
         const getList = "SELECT todo, users.id from users, list where fk_user = users.id and users.username = ?"
-
         db.execute(getList, [username], (error, result) => {
             if (error) {
                 res.status(500).json({message: 'Internal server error'})
             }
             if (!result.length) {
-                res.status(400).json({message: 'Friend not found, please check if you fill the correct username'})
-            } else {
+                res.status(400).json({message: 'Your friend dont have any todos'})
+            }
+            else {
                 res.send(result)
             }
         });
