@@ -9,7 +9,7 @@ const showFriendListSchema = joi.object({
 
 //getFriend controller
 const friendListSchema = joi.object({
-    friendId: joi.string().min(1).max(20).required()
+    friendId: joi.number().min(1).max(20).required()
 });
 
 module.exports = {
