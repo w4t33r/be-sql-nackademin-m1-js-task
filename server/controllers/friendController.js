@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const db = require("../db/db");
-const {check, validationResult} = require('express-validator')
+const joi = require("joi")
 const path = require("path");
+const {friendListSchema} = require("../validation/validation")
 require("dotenv").config({
     path: path.resolve(__dirname, '../db/.env')
 });
@@ -36,7 +37,8 @@ module.exports.getFriend = async (req, res) => {
 
 
 
-module.exports.showUsers = async (req, res) => {
+module.exports.showUsers =
+    async (req, res) => {
     try {
         const showUsers = "SELECT id, username FROM users";
         db.execute(showUsers, (err, result) => {
@@ -85,27 +87,30 @@ module.exports.showFriend = async (req, res) => {
 
 module.exports.showFriendList = async (req, res) => {
     try {
-        const token = req.headers.authorization.split(' ')[1]
-        if (!token) {
-            return res.status(401).json({message: 'Bad token'})
+        const validation = friendListSchema.validate(req.body);
+        if (validation.error) {
+            return res.status(400).json(validation.error.details[0].message);
         }
-        const {username} = req.body
+        const {username} = validation.value
 
-        const getList = "SELECT todo, users.id from users, list where fk_user = users.id and users.username = ?"
         if(username === undefined) {
             res.status(400).json({message: 'Bad Request'})
         }
 
+        const getList = "SELECT todo, users.id from users, list where fk_user = users.id and users.username = ?"
+
         db.execute(getList, [username], (error, result) => {
             if(error) {
-                console.log(error)
                 res.status(500).json({message: 'Internal server error'})
-            } else {
+            }
+            if(!result.length) {
+                res.status(400).json({message:'Friend not found, please check if you fill the correct ID'})
+            }
+            else {
                 res.send(result)
             }
         });
     } catch (e) {
-        console.log(e)
         res.status(500).json({message: 'Internal server error'})
     }
 
