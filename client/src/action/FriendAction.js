@@ -26,10 +26,7 @@ const showUsers = async (setToDo) => {
             })
             .then(({data}) => {
                 if(!data.length) {
-                    console.log(data)
-                } else {
-
-                    setToDo(data)
+                    setToDo(data.result, data.userId)
                 }
             })
     } catch (e){

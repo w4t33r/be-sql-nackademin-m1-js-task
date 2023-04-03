@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const db = require("../db/db");
 const path = require("path");
 const {friendListSchema, showFriendListSchema, friendDeleteSchema} = require("../validation/validation")
@@ -10,33 +9,32 @@ require("dotenv").config({
 
 module.exports.getFriend = async (req, res) => {
     try {
-        const validation = friendListSchema.validate(req.body);
+        const validation = await friendListSchema.validate(req.body);
         if (validation.error) {
             return res.status(400).json(validation.error.details[0].message);
-        }
-        const {friendId} = validation.value
+        } else {
+            const {friendId} = validation.value
+            // fetched from middleware, token verif and user Data.
+            const currentUser = req.user.id;
 
-        console.log(friendId)
-        if (friendId === undefined) {
-            res.status(400).json({
-                message: 'Bad Request:' +
-                    'Please check if you entered the correct friendId' +
-                    'it must be in the following format - friendId:id where id is user_id'
-            })
-        }
-
-
-        // fetched from middleware, token verif and user Data.
-        const id = req.user.id;
-
-        const createList = "INSERT INTO friend (fk_users, fk_friend) VALUES (? , ?)";
-        db.execute(createList, [id, friendId], (err, result) => {
-            if (err) {
-                res.status(401).json({message: 'User not found, or already your friend'})
-            } else {
-                res.status(201).json({message: 'Friend added'})
+            if (friendId === undefined) {
+                res.status(400).json({
+                    message: 'Bad Request:' +
+                        'Please check if you entered the correct friendId' +
+                        'it must be in the following format - friendId:id where id is user_id'
+                })
+            }  else {
+                const createList = "INSERT INTO friend (fk_users, fk_friend) VALUES (? , ?)";
+                await db.execute(createList, [currentUser, friendId], (err, result) => {
+                    if (err) {
+                        res.status(401).json({message: 'User not found, or already your friend'})
+                    }
+                    else {
+                        res.status(201).json({message: 'Friend added'})
+                    }
+                })
             }
-        })
+        }
     } catch (e) {
         res.status(500).json({message: 'Internal server error'})
     }
@@ -53,7 +51,8 @@ module.exports.showUsers =
                 if (err) {
                     res.status(500).json({message: 'Internal server error'})
                 } else {
-                    res.send(result)
+                    res.send({result, userId});
+
                 }
             })
         } catch (e) {
