@@ -51,6 +51,7 @@ const getFriends = (id , setToDo) => {
 
         })
         .catch((err) => alert(`Already your friend`))
+
 }
 
 const deleteFriends = (id, setToDo) => {
@@ -60,12 +61,11 @@ const deleteFriends = (id, setToDo) => {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then((data) => {
-
             showFriends(setToDo)
             alert("Deleted")
 
         })
-        .catch((err) => alert(`You cant delete any todos if its not yours`))
+        .catch((err) => (err.response.data.message))
 
 }
 
@@ -76,13 +76,10 @@ const showFriendsList = async (username, setToDo) => {
             headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
         })
         .then(({data}) => {
-            if(!data.length) {
-                alert('Your friend dont have any todo list')
-            } else {
                 setToDo(data)
-            }
+
         })
-        .catch((err)=> alert("You already looking at your friend todo list"))
+        .catch((err) => alert(err.response.data.message))
 }
 
 

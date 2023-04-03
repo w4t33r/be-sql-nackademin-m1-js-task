@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const db = require("../db/db");
 const path = require("path");
-const {friendListSchema, showFriendListSchema} = require("../validation/validation")
+const {friendListSchema, showFriendListSchema, friendDeleteSchema} = require("../validation/validation")
 require("dotenv").config({
     path: path.resolve(__dirname, '../db/.env')
 });
@@ -112,8 +112,7 @@ module.exports.showFriendList = async (req, res) => {
             }
             if (!result.length) {
                 res.status(400).json({message: 'Your friend dont have any todos'})
-            }
-            else {
+            } else {
                 res.send(result)
             }
         });
@@ -127,41 +126,56 @@ module.exports.showFriendList = async (req, res) => {
 module.exports.deleteFriend = async (req, res) => {
     try {
 
+        const validation = friendDeleteSchema.validate(req.body);
+        if (validation.error) {
+            return res.status(400).json(validation.error.details[0].message);
+        }
+        const {id} = validation.value
+
+        if (id === undefined) {
+            res.status(400).json({message: 'Bad Request'})
+        }
+
         const secretKey = process.env.secret_key
         const token = req.headers.authorization.split(' ')[1]
         const decode = jwt.verify(token, secretKey)
         req.user = decode
         const userId = decode.id;
-        const {id} = req.body
+
+
         const checkSql = 'SELECT fk_users, fk_friend, users.id, users.username FROM friend, users WHERE friend.fk_users = users.id AND friend.id =?';
         const deleteList = "DELETE FROM friend WHERE id = ?";
+
+
         await db.execute(checkSql, [id], async (err, result) => {
             if (err) {
                 res.status(500).json({message: 'Internal server error'})
             }
             if (!result.length) {
-                res.status(204).json({message: 'Field cant be empty'})
+                return res.status(400).json({message: 'User is not your friend'})
+            } else {
+                const deleteId = id
+                if (result.length > 0) {
+                    result.map((async data => {
+                        const usersRef = data.fk_users
+                        if (usersRef === userId) {
+                            await db.execute(deleteList, [deleteId], (err, result) => {
+                                if (err) {
+                                    res.status(500).json({message: 'Internal server error'})
+                                } else {
+                                    res.status(200).json({message: 'Deleted'})
+                                }
+                            })
+
+                        } else {
+                            res.status(401).json({message: "Access denied"})
+                        }
+                    }))
+                }
+
             }
 
-            const deleteId = id
 
-            if (result.length > 0) {
-                const fk = result.map((async data => {
-                    const usersRef = data.fk_users
-                    if (usersRef === userId) {
-                        await db.execute(deleteList, [deleteId], (err, result) => {
-                            if (err) {
-                                res.status(500).json({message: 'Internal server error'})
-                            } else {
-                                res.status(200).json({message: 'Deleted'})
-                            }
-                        })
-
-                    } else {
-                        res.status(401).json({message: "Access denied"})
-                    }
-                }))
-            }
         })
 
     } catch (e) {
