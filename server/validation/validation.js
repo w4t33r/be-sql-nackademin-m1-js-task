@@ -19,9 +19,16 @@ const friendDeleteSchema = joi.object({
     id: joi.number().min(1).required()
 });
 
+// listCreate controller, createList
+const listCreateSchema = joi.object({
+    todo: joi.string().max(50).required(),
+    id: joi.number().min(1)
+});
+
 
 module.exports = {
     showFriendListSchema,
     friendListSchema,
-    friendDeleteSchema
+    friendDeleteSchema,
+    listCreateSchema
 }

@@ -23,26 +23,6 @@ const getAllToDo = async (setToDo) => {
 
 }
 
-/*
-const getAllToDo = async (setToDo) => {
-        await axios
-        .get("http://localhost:5000/api/auth/getList", {
-            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
-        })
-        .then(({data}) => {
-            if(!data.length) {
-                console.log(data)
-                console.log(localStorage.getItem('token'))
-            } else {
-                console.log(data)
-                setToDo(data)
-            }
-        })
-}
-
- */
-//await axios.post(`http://localhost:5000/api/delete`, {_id}, {
-//  headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
 
 const addToDo = (todo, setText, setToDo) => {
 
@@ -54,7 +34,7 @@ const addToDo = (todo, setText, setToDo) => {
             setText("")
             getAllToDo(setToDo)
         })
-        .catch((err) => console.log(err))
+        .catch((err) => alert(err.response.data))
 
 }
 
@@ -69,7 +49,7 @@ const updateToDo = (id, todo, setToDo, setText, setIsUpdating) => {
             setIsUpdating(false)
             getAllToDo(setToDo)
         })
-        .catch((err) => alert(id))
+        .catch((err) => alert(err.response.data))
 
 }
 
@@ -83,7 +63,7 @@ const deleteToDo = (id, setToDo) => {
         .then((data) => {
             getAllToDo(setToDo)
         })
-        .catch((err) => alert(id))
+        .catch((err) => alert(err.response.data))
 
 }
 
