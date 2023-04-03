@@ -1,7 +1,7 @@
 const db = require("../db/db")
 const jwt = require("jsonwebtoken");
 const path = require("path");
-const {listCreateSchema} = require("../validation/validation");
+const {listCreateSchema, updateListSchema} = require("../validation/validation");
 require("dotenv").config({
     path: path.resolve(__dirname, '../db/.env')
 });
@@ -77,13 +77,15 @@ module.exports.createList = (req, res) => {
 module.exports.updateList = async (req, res) => {
     try {
 
-        const secretKey = process.env.secret_key
-        const token = req.headers.authorization.split(' ')[1]
-        const decode = jwt.verify(token, secretKey)
-        req.user = decode
-        // const decodeToken = jwt.decode(token, {complete:true})
-        //console.log(decodeToken)
-        const {id, todo} = req.body;
+        const validation = updateListSchema.validate(req.body);
+        if (validation.error) {
+            return res.status(400).json(validation.error.details[0].message);
+        }
+        const {id, todo} = validation.value
+
+        if (todo === undefined || id === undefined) {
+            res.status(400).json({message: 'Bad Request'})
+        }
         const updateList = "UPDATE list SET todo = ? WHERE id = ?";
         db.execute(updateList, [todo, id], (err, result) => {
             if (err) {

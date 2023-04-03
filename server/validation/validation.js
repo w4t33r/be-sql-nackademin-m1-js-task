@@ -26,9 +26,20 @@ const listCreateSchema = joi.object({
 });
 
 
+
+const updateListSchema = joi.object({
+    todo: joi.string().max(50).required(),
+    id: joi.number().min(1).required()
+});
+
+
+
+
+
 module.exports = {
     showFriendListSchema,
     friendListSchema,
     friendDeleteSchema,
-    listCreateSchema
+    listCreateSchema,
+    updateListSchema
 }
