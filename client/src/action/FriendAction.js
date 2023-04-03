@@ -13,6 +13,7 @@ const showFriends = async (setToDo) => {
                 setToDo(data)
             }
         })
+        .catch((err) => alert(err.response.data.message))
 }
 
 
@@ -32,7 +33,7 @@ const showUsers = async (setToDo) => {
                 }
             })
     } catch (e){
-        console.log(e)
+        alert(e.response.data.message)
     }
 }
 //await axios.post(`http://localhost:5000/api/delete`, {_id}, {
@@ -50,7 +51,7 @@ const getFriends = (id , setToDo) => {
             alert('Friend Added')
 
         })
-        .catch((err) => alert(`Already your friend`))
+        .catch((err) => alert(err.response.data.message))
 
 }
 

@@ -19,7 +19,7 @@ const getAllToDo = async (setToDo) => {
                     setToDo(data)
                 }
             })
-
+            .catch((err) => alert(err.response.data))
 
 }
 
