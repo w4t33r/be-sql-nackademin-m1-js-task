@@ -13,7 +13,7 @@ const friendListSchema = joi.object({
     id: joi.number().min(1)
 });
 
-// deleteFriend controller
+// deleteFriend controller && Delete listController
 const friendDeleteSchema = joi.object({
     userId: joi.number().min(1),
     id: joi.number().min(1).required()
@@ -26,7 +26,7 @@ const listCreateSchema = joi.object({
 });
 
 
-
+// listCreate controller, updateList
 const updateListSchema = joi.object({
     todo: joi.string().max(50).required(),
     id: joi.number().min(1).required()

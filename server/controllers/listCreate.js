@@ -1,7 +1,7 @@
 const db = require("../db/db")
 const jwt = require("jsonwebtoken");
 const path = require("path");
-const {listCreateSchema, updateListSchema} = require("../validation/validation");
+const {listCreateSchema, updateListSchema, friendDeleteSchema} = require("../validation/validation");
 require("dotenv").config({
     path: path.resolve(__dirname, '../db/.env')
 });
@@ -49,7 +49,6 @@ module.exports.createList = (req, res) => {
         if (todo === undefined) {
             res.status(400).json({message: 'Bad Request'})
         }
-
 
 
         const secretKey = process.env.secret_key
@@ -106,12 +105,23 @@ module.exports.updateList = async (req, res) => {
 module.exports.deleteList = async (req, res) => {
     try {
 
+        const validation = friendDeleteSchema.validate(req.body);
+        if (validation.error) {
+            return res.status(400).json(validation.error.details[0].message);
+        }
+        const {id} = validation.value
+
+        if (id === undefined) {
+            res.status(400).json({message: 'Bad Request'})
+        }
+
         const secretKey = process.env.secret_key
         const token = req.headers.authorization.split(' ')[1]
         const decode = jwt.verify(token, secretKey)
         req.user = decode
         const userId = decode.id;
-        const {id} = req.body
+
+
         const checkSql = 'SELECT fk_user, users.id, users.username, list.todo FROM list, users WHERE list.fk_user = users.id AND list.id =?';
         const deleteList = "DELETE FROM list WHERE id = ?";
 
@@ -120,25 +130,27 @@ module.exports.deleteList = async (req, res) => {
                 res.status(500).json({message: 'Internal server error'})
             }
             if (!result.length) {
-                res.status(204).json({message: 'Field cant be empty'})
-            }
-            const deleteId = id
-            if (result.length > 0) {
-                const fk = result.map((async data => {
-                    const fKey = data.fk_user
-                    if (fKey === userId) {
-                        await db.execute(deleteList, [deleteId], (err, result) => {
-                            if (err) {
-                                res.status(500).json({message: 'Internal server error'})
-                            } else {
-                                res.status(200).json({message: 'Deleted'})
-                            }
-                        })
+                res.status(401).json({message: 'Access Denied, you cant delete todos if its not yours.'})
+            } else {
+                const deleteId = id
+                if (result.length > 0) {
+                    result.map((async data => {
+                        const fKey = data.fk_user
+                        if (fKey === userId) {
+                            await db.execute(deleteList, [deleteId], (err, result) => {
+                                if (err) {
+                                    res.status(500).json({message: 'Internal server error'})
+                                } else {
+                                    res.status(200).json({message: 'Deleted'})
+                                }
+                            })
 
-                    } else {
-                        res.status(401).json({message: "Access denied"})
-                    }
-                }))
+                        } else {
+                            res.status(401).json({message: "Access denied"})
+                        }
+                    }))
+                }
+
             }
         })
 

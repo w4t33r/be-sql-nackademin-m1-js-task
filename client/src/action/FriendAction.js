@@ -65,7 +65,7 @@ const deleteFriends = (id, setToDo) => {
             alert("Deleted")
 
         })
-        .catch((err) => (err.response.data.message))
+        .catch((err) => alert(err.response.data.message))
 
 }
 
