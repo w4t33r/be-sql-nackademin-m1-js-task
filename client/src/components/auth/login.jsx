@@ -15,8 +15,8 @@ const Login = () => {
     return (
         <div className='login'>
             <div className="login__header">Log In</div>
-            <Input value={email} setValue={setEmail} type="text" placeholder="Введите email..."/>
-            <Input value={password} setValue={setPassword} type="password" placeholder="Введите пароль..."/>
+            <Input value={email} setValue={setEmail} type="text" placeholder="Enter username..."/>
+            <Input value={password} setValue={setPassword} type="password" placeholder="Enter password..."/>
             <button className="login__btn" onClick={() => dispatch(login(email, password))}>log in</button>
         </div>
 
